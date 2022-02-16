@@ -160,4 +160,5 @@ cython_debug/
 # PyCharm
 .idea/
 
-# End of https://www.toptal.com/developers/gitignore/api/django
+# Postgresql data volume
+data/

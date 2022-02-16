@@ -57,8 +57,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'configuration.wsgi.application'
+
+database = dj_database_url.config(default='postgres://postgres:password@db:5432/postgres', conn_max_age=600)
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///db.sqlite3', conn_max_age=600)
+    'default': database
 }
 
 # Password validation

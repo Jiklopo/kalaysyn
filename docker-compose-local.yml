@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  django:
+    container_name: kalaysyn_django
+    depends_on:
+      - db
+    build: .
+    volumes:
+      - ".:/app"
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+
+  db:
+    container_name: kalaysyn_db
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - .:/var/lib/postgresql
+
+volumes:
+  kalaysyn:
