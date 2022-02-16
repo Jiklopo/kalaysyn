@@ -7,10 +7,32 @@ services:
       - db
     build: .
     volumes:
-      - ".:/app"
+      - .:/app
     ports:
       - "8000:8000"
     command: python manage.py runserver 0.0.0.0:8000
+
+  celery:
+    container_name: kalaysyn_celery
+    depends_on:
+      - django
+      - redis
+    build: .
+    volumes:
+      - .:/app
+    command: celery -A configuration worker --loglevel=INFO
+
+  flower:
+    container_name: kalaysyn_flower
+    depends_on:
+      - django
+      - redis
+    build: .
+    ports:
+      - "5555:5555"
+    volumes:
+      - .:/app
+    command: celery -A configuration flower
 
   db:
     container_name: kalaysyn_db
@@ -22,5 +44,8 @@ services:
     volumes:
       - .:/var/lib/postgresql
 
-volumes:
-  kalaysyn:
+  redis:
+    container_name: kalaysyn_redis
+    image: redis
+    ports:
+      - "6379:6379"

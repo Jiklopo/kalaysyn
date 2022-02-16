@@ -58,9 +58,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'configuration.wsgi.application'
 
-database = dj_database_url.config(default='postgres://postgres:password@db:5432/postgres', conn_max_age=600)
 DATABASES = {
-    'default': database
+    'default': dj_database_url.config(default='sqlite:///db.sqlite3', conn_max_age=600)
 }
 
 # Password validation
@@ -92,3 +91,10 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery
+CELERY_BROKER_URL = getenv('REDIS_URL', 'redis://redis:6379')
+CELERY_RESULT_BACKEND = getenv('REDIS_URL', 'redis://redis:6379')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
