@@ -2,20 +2,23 @@ import dj_database_url
 from pathlib import Path
 from os import getenv
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#uovdkdnpugy_q4h1zg41^tn$8va($i-ji@++1oa1wt&7o@e@l'
 DEBUG = True
+
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     getenv('APP_URL', '0.0.0.0')
 ]
 
-LOCAL_APPS = []
+LOCAL_APPS = [
+    'apps.health'
+]
 
 THIRD_PARTY_APPS = [
-    'rest_framework'
+    'rest_framework',
+    'drf_spectacular'
 ]
 
 INSTALLED_APPS = [
@@ -38,6 +41,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Kalaysyn API',
+    'DESCRIPTION': 'API for Kalaysyn mobile app',
+    'VERSION': '0.0.1',
+    'SERVE_INCLUDE_SCHEMA': False
+}
 
 ROOT_URLCONF = 'configuration.urls'
 TEMPLATES = [
@@ -78,13 +92,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
