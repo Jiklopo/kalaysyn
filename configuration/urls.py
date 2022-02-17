@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 open_api_patterns = [
     path('', SpectacularAPIView.as_view(), name='schema'),
@@ -8,7 +9,14 @@ open_api_patterns = [
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
+auth_patterns = [
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify')
+]
+
 api_patterns = [
+    path('auth/', include(auth_patterns)),
     path('health/', include('apps.health.urls')),
 ]
 
