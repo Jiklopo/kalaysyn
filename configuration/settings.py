@@ -13,6 +13,7 @@ ALLOWED_HOSTS = [
 ]
 
 LOCAL_APPS = [
+    'apps.authentication',
     'apps.health'
 ]
 
@@ -43,6 +44,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTH_USER_MODEL = 'authentication.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
