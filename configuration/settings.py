@@ -14,6 +14,7 @@ ALLOWED_HOSTS = [
 
 LOCAL_APPS = [
     'apps.authentication',
+    'apps.records',
     'apps.health'
 ]
 
