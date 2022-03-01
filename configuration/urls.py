@@ -12,12 +12,13 @@ open_api_patterns = [
 auth_patterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('token/verify/', TokenVerifyView.as_view(), name='token_verify')
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('', include('apps.authentication.urls'))
 ]
 
 api_patterns = [
     path('auth/', include(auth_patterns)),
-    path('health/', include('apps.health.urls')),
+    path('health/', include('apps.health.urls'))
 ]
 
 urlpatterns = [
