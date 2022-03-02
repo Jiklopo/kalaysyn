@@ -5,9 +5,9 @@ class EmotionsTextChoices(models.TextChoices):
     # Note for my Android friends:
     # VAR_NAME = DB_VALUE, HUMAN_READABLE_NAME
     # E.g. VAR_NAME = ANGER; DB_VALUE = ANGR; HUMAN_READABLE_NAME = Anger
-    
+
     # VAR_NAME is local, you do not need to care about that
-    # DB_VALUE is how it is actually stored in DB, you need to send this one and you will receive this one
+    # DB_VALUE is how it is actually stored in DB, you will send and receive this value
     # HUMAN_READABLE_NAME is how it is displayed on admin page, no need to care as well
 
     # Main Emotions

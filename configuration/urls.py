@@ -18,7 +18,8 @@ auth_patterns = [
 
 api_patterns = [
     path('auth/', include(auth_patterns)),
-    path('health/', include('apps.health.urls'))
+    path('health/', include('apps.health.urls')),
+    path('records/', include('apps.records.urls'))
 ]
 
 urlpatterns = [
