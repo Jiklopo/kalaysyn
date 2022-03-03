@@ -4,14 +4,14 @@ from django.db import models
 class EmotionsTextChoices(models.TextChoices):
     # Note for my Android friends:
     # VAR_NAME = DB_VALUE, HUMAN_READABLE_NAME
-    # E.g. VAR_NAME = ANGER; DB_VALUE = ANGR; HUMAN_READABLE_NAME = Anger
+    # E.g. VAR_NAME = ANGER; DB_VALUE = ANGER; HUMAN_READABLE_NAME = Anger
 
     # VAR_NAME is local, you do not need to care about that
     # DB_VALUE is how it is actually stored in DB, you will send and receive this value
     # HUMAN_READABLE_NAME is how it is displayed on admin page, no need to care as well
 
     # Main Emotions
-    ANGER = 'ANGR', 'Anger'
+    ANGER = 'ANGER', 'Anger'
     SADNESS = 'SADNESS', 'Sadness'
     SURPRISE = 'SURPRISE', 'Surprise'
     JOY = 'JOY', 'Joy'
@@ -21,7 +21,7 @@ class EmotionsTextChoices(models.TextChoices):
     # Anger subtypes
     RAGE = 'RAGE', 'Rage'
     EXASPERATION = 'EXASPERATION', 'Exasperation'
-    IRRITATION = 'IRRTN', 'Irritation'
+    IRRITATION = 'IRRITATION', 'Irritation'
     ENVY = 'ENVY', 'Envy'
     DISGUST = 'DISGUST', 'Disgust'
 
@@ -29,36 +29,36 @@ class EmotionsTextChoices(models.TextChoices):
     SUFFERING = 'SUFFER', 'Suffering'
     DISAPPOINTMENT = 'DISSAPPOINT', 'Disappointment'
     SHAME = 'SHAME', 'Shame'
-    NEGLECTION = 'NGLCT', 'Neglection'
-    DESPAIR = 'DSPR', 'Despair'
+    NEGLECTION = 'NEGLECTION', 'Neglection'
+    DESPAIR = 'DESPAIR', 'Despair'
 
     # Surprise subtypes
     STUN = 'STUN', 'Stun'
-    CONFUSION = 'CONF', 'Confusion'
-    AMAZEMENT = 'AMAZE', 'Amazement'
+    CONFUSION = 'CONFUSION', 'Confusion'
+    AMAZEMENT = 'AMAZEMENT', 'Amazement'
     OVERCOME = 'OVERCOME', 'Overcome'
     MOVED = 'MOVED', 'Moved'
 
     # Joy subtypes
-    CONTENT = 'CNTNT', 'Content'
+    CONTENT = 'CONTENT', 'Content'
     HAPPINESS = 'HAPPY', 'Happiness'
     CHEER = 'CHEER', 'Cheer'
     PROUDNESS = 'PROUD', 'Proudness'
-    OPTIMISM = 'OPTIM', 'Optimism'
-    ENTHUSIASM = 'ENTHSM', 'Enthusiasm'
-    ELATION = 'ELTN', 'Elation'
-    ENTHRALLED = 'ENTHRL', 'Enthralled'
+    OPTIMISM = 'OPTIMISM', 'Optimism'
+    ENTHUSIASM = 'ENTHUSIASM', 'Enthusiasm'
+    ELATION = 'ELATION', 'Elation'
+    ENTHRALLED = 'ENTHRALLED', 'Enthralled'
 
     # Love subtypes
-    AFFECTION = 'AFFCTN', 'Affection'
+    AFFECTION = 'AFFECTION', 'Affection'
     LONGING = 'LONGING', 'Longing'
-    DESIRE = 'DSR', 'Desire'
-    TENDERNESS = 'TNDRNS', 'Tenderness'
+    DESIRE = 'DESIRE', 'Desire'
+    TENDERNESS = 'TENDERNESS', 'Tenderness'
     PEACE = 'PEACE', 'Peace'
 
     # Fear subtypes
     SCARE = 'SCARE', 'Scare'
     TERROR = 'TERROR', 'Terror'
-    INSECURE = 'INSEC', 'Insecure'
-    NERVOUSNESS = 'NRVSNS', 'Nervousness'
+    INSECURE = 'INSECURE', 'Insecure'
+    NERVOUSNESS = 'NERVOUSNESS', 'Nervousness'
     HORROR = 'HORROR', 'Horror'
