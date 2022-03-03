@@ -16,3 +16,8 @@ class CreateAndAddUserMixin:
         user = serializer.save(user=request.user)
         data = {'id': user.id, **serializer.data}
         return Response(data=data, status=status.HTTP_201_CREATED)
+
+
+class UserSpecificQuerysetMixin:
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
