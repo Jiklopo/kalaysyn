@@ -17,7 +17,8 @@ ALLOWED_HOSTS = [
 LOCAL_APPS = [
     'apps.authentication',
     'apps.records',
-    'apps.health'
+    'apps.health',
+    'apps.qr'
 ]
 
 THIRD_PARTY_APPS = [
@@ -128,3 +129,6 @@ CELERY_TASK_SERIALIZER = 'json'
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+# App settings
+CODE_VALID_SECONDS = 300
