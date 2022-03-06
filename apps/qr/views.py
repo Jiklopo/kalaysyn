@@ -2,7 +2,7 @@ from rest_framework import mixins
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ParseError
 from drf_spectacular.utils import extend_schema
 
 from apps.common.views import IsAuthenticatedView
@@ -43,6 +43,8 @@ class LinkCodeView(IsAuthenticatedView, mixins.UpdateModelMixin):
         code = super().get_object()
         if not code or not code.is_valid or code.user is not None:
             raise NotFound()
+        if code.doctor.id == self.request.user.id:
+            raise ParseError('user cannot link with himself')
         return code
 
     @extend_schema(
