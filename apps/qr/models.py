@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from django.db import models
 
 from configuration.settings import CODE_VALID_SECONDS
@@ -11,8 +11,7 @@ class RelationshipCode(TimeStampModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     doctor = models.ForeignKey(
         to=User,
-        on_delete=models.CASCADE,
-        related_name='doctor_relationship_codes'
+        on_delete=models.CASCADE
     )
     user = models.ForeignKey(
         to=User,
@@ -25,7 +24,7 @@ class RelationshipCode(TimeStampModel):
     @property
     def is_valid(self):
         "Returns if code is still valid"
-        diff = datetime.now - self.created_at
+        diff = datetime.now(timezone.utc) - self.created_at
         return diff < timedelta(seconds=CODE_VALID_SECONDS)
 
     @property
