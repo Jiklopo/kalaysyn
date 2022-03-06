@@ -10,6 +10,9 @@ services:
       - .:/app
     ports:
       - "8000:8000"
+      - "3000:3000"
+    environment:
+      - ENABLE_DEBUGGING=1
     command: python manage.py runserver 0.0.0.0:8000
 
   celery:

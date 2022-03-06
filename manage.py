@@ -4,8 +4,24 @@ import os
 import sys
 
 
+def try_initialize_debugger():
+    if not os.getenv('ENABLE_DEBUGGING'):
+        return
+
+    import debugpy
+    try:
+        debugpy.listen(('0.0.0.0', 3000))
+    except:
+        return
+    print('Waiting for vs code debugger...')
+    debugpy.wait_for_client()
+    print('Debugger attached!')
+
+
 def main():
     """Run administrative tasks."""
+    try_initialize_debugger()
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'configuration.settings')
     try:
         from django.core.management import execute_from_command_line
