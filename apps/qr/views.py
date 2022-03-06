@@ -26,7 +26,7 @@ class GenerateCodeView(IsAuthenticatedView, mixins.CreateModelMixin):
     )
     def post(self, request: Request, *args, **kwargs):
         if not request.user.is_doctor:
-            return Response('Only doctors can generate codes', status.HTTP_403_FORBIDDEN)
+            return Response({'error': 'Only doctors can generate codes'}, status.HTTP_403_FORBIDDEN)
 
         return self.create(request, *args, **kwargs)
 

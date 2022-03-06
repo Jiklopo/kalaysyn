@@ -18,7 +18,8 @@ LOCAL_APPS = [
     'apps.authentication',
     'apps.records',
     'apps.health',
-    'apps.qr'
+    'apps.qr',
+    'apps.profile'
 ]
 
 THIRD_PARTY_APPS = [
