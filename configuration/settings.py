@@ -19,7 +19,8 @@ LOCAL_APPS = [
     'apps.records',
     'apps.health',
     'apps.qr',
-    'apps.profile'
+    'apps.profile',
+    'apps.goals',
 ]
 
 THIRD_PARTY_APPS = [
