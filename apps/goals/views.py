@@ -3,7 +3,7 @@ from apps.common.mixins import CreateAndAddUserMixin, UserSpecificQuerysetMixin
 
 from apps.common.views import IsAuthenticatedView
 from apps.goals.models import Goal, GoalRecord, Roadmap
-from apps.goals.serializers import GoalRecordSerializer, GoalSerializer, RoadmapSerializer
+from apps.goals.serializers import GoalRecordSerializer, GoalSerializer, RoadmapInputSerializer, RoadmapOutputSerializer
 
 
 class GoalsCreateListView(IsAuthenticatedView,
@@ -20,11 +20,11 @@ class GoalsCreateListView(IsAuthenticatedView,
         return self.list(request, *args, **kwargs)
 
 
-class GoalsRetrieveUpdateDestroyView(IsAuthenticatedView,
-                                     mixins.RetrieveModelMixin,
-                                     mixins.UpdateModelMixin,
-                                     mixins.DestroyModelMixin
-                                     ):
+class GoalRetrieveUpdateDestroyView(IsAuthenticatedView,
+                                    mixins.RetrieveModelMixin,
+                                    mixins.UpdateModelMixin,
+                                    mixins.DestroyModelMixin
+                                    ):
     serializer_class = GoalSerializer
     queryset = Goal.objects.all()
 
@@ -42,8 +42,12 @@ class RoadmapCreateListView(IsAuthenticatedView,
                             mixins.CreateModelMixin,
                             mixins.ListModelMixin
                             ):
-    serializer_class = RoadmapSerializer
-    queryset = Roadmap.objects.all()
+    queryset = Roadmap.objects.prefetch_related('goals')
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RoadmapOutputSerializer
+        return RoadmapInputSerializer
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
@@ -57,8 +61,12 @@ class RoadmapRetrieveUpdateDelete(IsAuthenticatedView,
                                   mixins.UpdateModelMixin,
                                   mixins.DestroyModelMixin
                                   ):
-    serializer_class = RoadmapSerializer
-    queryset = Roadmap.objects.all().prefetch_related('goals')
+    queryset = Roadmap.objects.prefetch_related('goals')
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RoadmapOutputSerializer
+        return RoadmapInputSerializer
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)

@@ -15,21 +15,32 @@ class GoalSerializer(serializers.ModelSerializer):
         ]
 
 
-class RoadmapSerializer(serializers.ModelSerializer):
-    goals = GoalSerializer(many=True)
+class RoadmapInputSerializer(serializers.ModelSerializer):
+    goals = serializers.PrimaryKeyRelatedField(
+        queryset=Goal.objects.all(),
+        write_only=True,
+        many=True
+    )
 
     class Meta:
-        models = Roadmap
+        model = Roadmap
         fields = '__all__'
         read_only_fields = [
             'id',
             'created_at',
-            'updated_at'
+            'updated_at',
         ]
 
 
+class RoadmapOutputSerializer(serializers.ModelSerializer):
+    goals = GoalSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Roadmap
+        fields = '__all__'
+
 class GoalRecordSerializer(serializers.ModelSerializer):
-    goal = serializers.StringRelatedField()
+    goal = serializers.PrimaryKeyRelatedField(queryset=Goal.objects.all())
 
     class Meta:
         model = GoalRecord
@@ -48,4 +59,3 @@ class GoalRecordSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
         ]
-
