@@ -4,7 +4,8 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework import mixins
 from rest_framework.exceptions import ParseError
 
-from apps.common.mixins import CreateAndAddUserMixin, UserSpecificQuerysetMixin
+from apps.common.filters import UserFieldFilter
+from apps.common.mixins import CreateAndAddUserMixin
 from apps.common.views import IsAuthenticatedView
 from apps.records.models import Record
 from apps.records.serializers import RecordSerializer
@@ -12,7 +13,6 @@ from apps.records.serializers import RecordSerializer
 
 class RecordListCreateView(IsAuthenticatedView,
                            CreateAndAddUserMixin,
-                           UserSpecificQuerysetMixin,
                            mixins.ListModelMixin):
     serializer_class = RecordSerializer
     queryset = Record.objects.all()
@@ -32,12 +32,12 @@ class RecordListCreateView(IsAuthenticatedView,
 
 
 class RecordUpdateDeleteView(IsAuthenticatedView,
-                             UserSpecificQuerysetMixin,
                              mixins.DestroyModelMixin,
                              mixins.UpdateModelMixin,
                              mixins.RetrieveModelMixin):
     serializer_class = RecordSerializer
     queryset = Record.objects.all()
+    filter_backends = [UserFieldFilter]
 
     @extend_schema(description='Get record details')
     def get(self, request, *args, **kwargs):
@@ -53,9 +53,9 @@ class RecordUpdateDeleteView(IsAuthenticatedView,
 
 
 class RecordDateRangeView(IsAuthenticatedView,
-                          UserSpecificQuerysetMixin,
                           mixins.ListModelMixin):
     serializer_class = RecordSerializer
+    filter_backends = [UserFieldFilter]
 
     def parse_date(self, parameter_name, default) -> datetime:
         date_string = self.request.query_params.get(parameter_name)

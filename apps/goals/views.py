@@ -1,5 +1,6 @@
 from rest_framework import mixins
-from apps.common.mixins import CreateAndAddUserMixin, UserSpecificQuerysetMixin
+from apps.common.filters import UserFieldFilter
+from apps.common.mixins import CreateAndAddUserMixin
 
 from apps.common.views import IsAuthenticatedView
 from apps.goals.models import Goal, GoalRecord, Roadmap
@@ -7,11 +8,17 @@ from apps.goals.serializers import GoalRecordSerializer, GoalSerializer, Roadmap
 
 
 class GoalsCreateListView(IsAuthenticatedView,
-                          mixins.CreateModelMixin,
+                          CreateAndAddUserMixin,
                           mixins.ListModelMixin
                           ):
     serializer_class = GoalSerializer
     queryset = Goal.objects.all()
+    user_field = 'created_by'
+    allow_null = True
+    filter_backends = [UserFieldFilter]
+
+    def filter_queryset(self, queryset):
+        return super().filter_queryset(queryset)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
@@ -27,6 +34,9 @@ class GoalRetrieveUpdateDestroyView(IsAuthenticatedView,
                                     ):
     serializer_class = GoalSerializer
     queryset = Goal.objects.all()
+    user_field = 'created_by'
+    allow_null = True
+    filter_backends = [UserFieldFilter]
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -43,6 +53,9 @@ class RoadmapCreateListView(IsAuthenticatedView,
                             mixins.ListModelMixin
                             ):
     queryset = Roadmap.objects.prefetch_related('goals')
+    user_field = 'created_by'
+    allow_null = True
+    filter_backends = [UserFieldFilter]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -62,6 +75,9 @@ class RoadmapRetrieveUpdateDelete(IsAuthenticatedView,
                                   mixins.DestroyModelMixin
                                   ):
     queryset = Roadmap.objects.prefetch_related('goals')
+    user_field = 'created_by'
+    allow_null = True
+    filter_backends = [UserFieldFilter]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -80,11 +96,11 @@ class RoadmapRetrieveUpdateDelete(IsAuthenticatedView,
 
 class GoalRecordCreateListView(IsAuthenticatedView,
                                CreateAndAddUserMixin,
-                               UserSpecificQuerysetMixin,
                                mixins.ListModelMixin
                                ):
     serializer_class = GoalRecordSerializer
     queryset = GoalRecord.objects.all()
+    filter_backends = [UserFieldFilter]
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
@@ -100,6 +116,7 @@ class GoalRecordRetrieveUpdateDelete(IsAuthenticatedView,
                                      ):
     serializer_class = GoalRecordSerializer
     queryset = GoalRecord.objects.all().prefetch_related('goal')
+    filter_backends = [UserFieldFilter]
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)

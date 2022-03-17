@@ -2,9 +2,12 @@ from dataclasses import fields
 from rest_framework import serializers
 
 from apps.goals.models import Goal, GoalRecord, Roadmap
+from apps.authentication.models import User
 
 
 class GoalSerializer(serializers.ModelSerializer):
+    created_by = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Goal
         fields = '__all__'
@@ -38,6 +41,7 @@ class RoadmapOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roadmap
         fields = '__all__'
+
 
 class GoalRecordSerializer(serializers.ModelSerializer):
     goal = serializers.PrimaryKeyRelatedField(queryset=Goal.objects.all())
