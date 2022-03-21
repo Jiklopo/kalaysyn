@@ -1,6 +1,15 @@
 from django.contrib import admin
+from apps.goals.models import Goal, Roadmap, RoadmapGoals
 
-from apps.goals.models import Goal, Roadmap
+
+class RoadmapGoalsInline(admin.TabularInline):
+    model = RoadmapGoals
+    extra = 1
+
+
+class RoadmapAdmin(admin.ModelAdmin):
+    inlines = [RoadmapGoalsInline]
+
 
 admin.site.register(Goal)
-admin.site.register(Roadmap)
+admin.site.register(Roadmap, RoadmapAdmin)

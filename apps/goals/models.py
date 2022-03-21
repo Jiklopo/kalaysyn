@@ -34,6 +34,10 @@ class RoadmapGoals(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
     roadmap = models.ForeignKey(Roadmap, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = 'Roadmap Goals Mapping'
+        verbose_name_plural = 'Roadmap Goals Mapping'
+
 
 class GoalRecord(TimeStampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
