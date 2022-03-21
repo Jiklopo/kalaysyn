@@ -42,3 +42,4 @@ vine==5.0.0
 wcwidth==0.2.5
 whitenoise==6.0.0
 wrapt==1.13.3
+django-jazzmin==2.4.9

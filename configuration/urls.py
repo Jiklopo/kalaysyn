@@ -3,9 +3,12 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
+from apps import goals
+
 open_api_patterns = [
     path('', SpectacularAPIView.as_view(), name='schema'),
-    path('swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'),
+         name='swagger-ui'),
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
@@ -21,7 +24,8 @@ api_patterns = [
     path('health/', include('apps.health.urls')),
     path('records/', include('apps.records.urls')),
     path('code/', include('apps.qr.urls')),
-    path('profile/', include('apps.profile.urls'))
+    path('profile/', include('apps.profile.urls')),
+    path('goals/', include('apps.goals.urls')),
 ]
 
 urlpatterns = [

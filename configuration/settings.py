@@ -19,7 +19,8 @@ LOCAL_APPS = [
     'apps.records',
     'apps.health',
     'apps.qr',
-    'apps.profile'
+    'apps.profile',
+    'apps.goals',
 ]
 
 THIRD_PARTY_APPS = [
@@ -29,6 +30,8 @@ THIRD_PARTY_APPS = [
 ]
 
 INSTALLED_APPS = [
+    'jazzmin', # This must be before admin!
+ 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     *THIRD_PARTY_APPS,
-    *LOCAL_APPS
+    *LOCAL_APPS,
 ]
 
 MIDDLEWARE = [
