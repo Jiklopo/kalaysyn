@@ -1,4 +1,5 @@
 from datetime import timedelta
+from webbrowser import get
 
 import dj_database_url
 from pathlib import Path
@@ -12,6 +13,10 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     getenv('APP_URL', '0.0.0.0')
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    getenv('TRUSTED_ORIGIN', 'http://localhost')
 ]
 
 LOCAL_APPS = [
@@ -30,8 +35,8 @@ THIRD_PARTY_APPS = [
 ]
 
 INSTALLED_APPS = [
-    'jazzmin', # This must be before admin!
- 
+    'jazzmin', # This app must be before django.contrib.admin
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
