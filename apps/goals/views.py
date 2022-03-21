@@ -49,13 +49,13 @@ class GoalRetrieveUpdateDestroyView(IsAuthenticatedView,
 
 
 class RoadmapCreateListView(IsAuthenticatedView,
-                            mixins.CreateModelMixin,
+                            CreateAndAddUserMixin,
                             mixins.ListModelMixin
                             ):
     queryset = Roadmap.objects.prefetch_related('goals')
+    filter_backends = [UserFieldFilter]
     user_field = 'created_by'
     allow_null = True
-    filter_backends = [UserFieldFilter]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -102,6 +102,7 @@ class GoalRecordCreateListView(IsAuthenticatedView,
     queryset = GoalRecord.objects.all()
     filter_backends = [UserFieldFilter]
 
+    # TODO: Do no accept goals that user cannot accept
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
