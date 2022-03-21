@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ParseError, NotFound
+from rest_framework.exceptions import ParseError
 
 from apps.goals.models import Goal, GoalRecord, Roadmap
-from apps.authentication.models import User
 
 
 class GoalSerializer(serializers.ModelSerializer):
@@ -25,6 +24,7 @@ class RoadmapInputSerializer(serializers.ModelSerializer):
         many=True
     )
 
+    # TODO: Find a better place for this
     def save(self, **kwargs):
         goals = self.validated_data.get('goals', None)
         user = kwargs.get('user', None)
@@ -58,6 +58,7 @@ class RoadmapOutputSerializer(serializers.ModelSerializer):
 class GoalRecordSerializer(serializers.ModelSerializer):
     goal = serializers.PrimaryKeyRelatedField(queryset=Goal.objects.all())
 
+    # TODO: Find a better place for this
     def save(self, **kwargs):
         goal = self.validated_data.get('goal', None)
         user = kwargs.get('user', None)
@@ -71,20 +72,10 @@ class GoalRecordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoalRecord
-        fields = [
-            'id',
-            'goal',
-            'date',
-            'user',
-            'is_done',
-            'description',
-            'created_at',
-            'updated_at',
-        ]
+        exclude = ['user']
         read_only_fields = [
             'id',
             'goal',
-            'user',
             'created_at',
             'updated_at',
         ]

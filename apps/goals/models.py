@@ -26,6 +26,9 @@ class Roadmap(TimeStampModel):
         null=True, blank=True
     )
 
+    def __str__(self):
+        return self.name
+
 
 class RoadmapGoals(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
