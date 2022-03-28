@@ -1,5 +1,23 @@
 from django.contrib import admin
 
-from apps.psytests.models import PsyTest
+from apps.psytests.models import PsyTest, Question, Variant
 
-admin.site.register(PsyTest)
+
+class VariantInline(admin.TabularInline):
+    model = Variant
+
+
+class QuestionInline(admin.TabularInline):
+    model = Question
+
+
+@admin.register(PsyTest)
+class PsyTestAdmin(admin.ModelAdmin):
+    inlines = [QuestionInline]
+
+
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    list_filter = ['test']
+    search_fields = ['text']
+    inlines = [VariantInline]
