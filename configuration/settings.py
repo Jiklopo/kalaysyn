@@ -26,6 +26,7 @@ LOCAL_APPS = [
     'apps.qr',
     'apps.profile',
     'apps.goals',
+    'apps.psytests',
 ]
 
 THIRD_PARTY_APPS = [
