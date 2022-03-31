@@ -1,13 +1,13 @@
-from dataclasses import fields
 from rest_framework import serializers
 
-from apps.psytests.models import PsyTest, Question, Variant
+from apps.psytests.models import PsyTest, PsyTestRecord, Question, Variant
 
 
 class VariantNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variant
         fields = [
+            'id',
             'text',
             'points'
         ]
@@ -15,22 +15,23 @@ class VariantNestedSerializer(serializers.ModelSerializer):
 
 class QuestionNestedSerializer(serializers.ModelSerializer):
     variants = VariantNestedSerializer(
-        queryset=Variant.objects.all(),
+        read_only=True,
         many=True
     )
 
     class Meta:
         model = Question
         fields = [
+            'id',
             'text',
             'variants'
         ]
 
 
-class PsyTestSerializer(serializers.ModelSerializer):
+class PsyFullTestSerializer(serializers.ModelSerializer):
     questions = QuestionNestedSerializer(
-        queryset=Question.objects.all(),
-        many=True
+        many=True,
+        read_only=True
     )
 
     class Meta:
@@ -38,5 +39,32 @@ class PsyTestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PsyTestRatingInputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PsyTest
+        fields = ['rating']
+
+
+class PsyTestRatingOutputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PsyTest
+        fields = '__all__'
+
+
 class PsyTestRecordSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = PsyTestRecord
+        exclude = ['user']
+
+    class ChosenVariantsField(serializers.PrimaryKeyRelatedField):
+        def get_queryset(self):
+            qs = super().get_queryset()
+            test_id = self.context['request'].data.get('test')
+            if test_id is not None:
+                qs = qs.filter(question__test_id=test_id)
+            return qs
+    test = serializers.PrimaryKeyRelatedField(queryset=PsyTest.objects.all())
+    chosen_variants = ChosenVariantsField(
+        queryset=Variant.objects.all(),
+        many=True
+    )

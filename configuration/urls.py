@@ -26,7 +26,9 @@ api_patterns = [
     path('code/', include('apps.qr.urls')),
     path('profile/', include('apps.profile.urls')),
     path('goals/', include('apps.goals.urls')),
+    path('tests/', include('apps.psytests.urls'))
 ]
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

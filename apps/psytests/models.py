@@ -9,12 +9,19 @@ class PsyTest(TimeStampModel):
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True, null=True)
     rating = models.FloatField(
+        default=0,
         validators=[
             MinValueValidator(0),
             MaxValueValidator(5)
         ],
         blank=True, null=True
     )
+    ratings_received = models.IntegerField(default=0)
+
+    def rate(self, rating):
+        self.rating = (self.rating * self.ratings_received + rating) / (self.ratings_received + 1)
+        self.ratings_received += 1
+        self.save()
 
     def __str__(self) -> str:
         return self.title
@@ -49,3 +56,4 @@ class PsyTestRecord(TimeStampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     test = models.ForeignKey(PsyTest, on_delete=models.CASCADE)
     chosen_variants = models.ManyToManyField(Variant)
+
