@@ -7,14 +7,12 @@ class RoadmapGoalsInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(Roadmap)
 class RoadmapAdmin(admin.ModelAdmin):
     inlines = [RoadmapGoalsInline]
     exclude = ['created_by']
 
 
+@admin.register(Goal)
 class GoalAdmin(admin.ModelAdmin):
     exclude = ['created_by']
-
-
-admin.site.register(Goal, GoalAdmin)
-admin.site.register(Roadmap, RoadmapAdmin)
