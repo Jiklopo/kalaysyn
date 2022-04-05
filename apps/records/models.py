@@ -10,17 +10,29 @@ from apps.records import EmotionsTextChoices
 class Record(TimeStampModel):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     date = models.DateTimeField()
-    rating = models.PositiveSmallIntegerField(validators=[MaxValueValidator(5)])
+    rating = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(5)])
     description = models.TextField(default="", blank=True, null=True)
     emotions = ArrayField(
         models.CharField(max_length=16, choices=EmotionsTextChoices.choices),
-        default=list
+        default=list,
+        null=True, blank=True
     )
     activities = ArrayField(
         models.CharField(max_length=128),
-        default=list
+        default=list,
+        null=True, blank=True
     )
 
-    sleep_rating = models.PositiveSmallIntegerField(validators=[MaxValueValidator(5)])
-    fatigue_rating = models.PositiveSmallIntegerField(validators=[MaxValueValidator(5)])
-    health_rating = models.PositiveSmallIntegerField(validators=[MaxValueValidator(5)])
+    sleep_rating = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(5)],
+        blank=True, null=True
+    )
+    fatigue_rating = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(5)],
+        blank=True, null=True
+    )
+    health_rating = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(5)],
+        blank=True, null=True
+    )
