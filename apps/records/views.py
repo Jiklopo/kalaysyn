@@ -52,6 +52,7 @@ class RecordUpdateDeleteView(IsAuthenticatedView,
 
 class RecordDateRangeView(IsAuthenticatedView,
                           mixins.ListModelMixin):
+    queryset = Record.objects.all()
     serializer_class = RecordSerializer
     filter_backends = [UserFieldFilter, DateRangeFilter]
 

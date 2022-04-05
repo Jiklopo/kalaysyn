@@ -18,11 +18,6 @@ class Record(TimeStampModel):
         default=list,
         null=True, blank=True
     )
-    activities = ArrayField(
-        models.CharField(max_length=128),
-        default=list,
-        null=True, blank=True
-    )
 
     sleep_rating = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(5)],

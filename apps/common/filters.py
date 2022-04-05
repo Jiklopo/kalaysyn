@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db.models import Q
 from rest_framework import filters
+from rest_framework.exceptions import ParseError
 
 
 class UserFieldFilter(filters.BaseFilterBackend):
@@ -38,8 +39,8 @@ class DateRangeFilter(filters.BaseFilterBackend):
         format = '%d-%m-%y %H:%M'
         try:
             return datetime.strptime(date_string, format)
-        except ValueError:
-            return default
+        except ValueError as e:
+            raise ParseError(str(e))
 
     def filter_queryset(self, request, queryset, view):
         date_field = getattr(view, 'date_field', self.date_field)

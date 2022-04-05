@@ -14,7 +14,6 @@ class RecordSerializer(serializers.ModelSerializer):
             'rating',
             'description',
             'emotions',
-            'activities',
             'sleep_rating',
             'fatigue_rating',
             'health_rating'
