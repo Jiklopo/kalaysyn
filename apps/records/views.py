@@ -57,12 +57,12 @@ class RecordDateRangeView(IsAuthenticatedView,
     filter_backends = [UserFieldFilter, DateRangeFilter]
 
     @extend_schema(
-        description='Get user records in specified date range',
+        description='Get user records in specified date range, inclusive',
         parameters=[
             OpenApiParameter('from', OpenApiTypes.DATE,
-                             description='DD-MM-YY HH:MM | Default: the beginning of times'),
+                             description='DD-MM-YY | Default: the beginning of times'),
             OpenApiParameter('to', OpenApiTypes.DATE,
-                             description='DD-MM-YY HH:MM | Default: Now')
+                             description='DD-MM-YY | Default: Now')
         ]
     )
     def get(self, request, *args, **kwargs):

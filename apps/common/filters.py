@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from django.db.models import Q
 from rest_framework import filters
 from rest_framework.exceptions import ParseError
@@ -28,7 +28,7 @@ class UserFieldFilter(filters.BaseFilterBackend):
         return method()
 
 
-class DateRangeFilter(filters.BaseFilterBackend):
+class DateTimeRangeFilter(filters.BaseFilterBackend):
     date_field = 'date'
 
     def parse_date(self, request, parameter_name, default) -> datetime:
@@ -46,6 +46,29 @@ class DateRangeFilter(filters.BaseFilterBackend):
         date_field = getattr(view, 'date_field', self.date_field)
         from_date = self.parse_date(request, 'from', datetime.fromtimestamp(0))
         to_date = self.parse_date(request, 'to', datetime.now())
+        return queryset\
+            .filter(**{f'{date_field}__gte': from_date, f'{date_field}__lte': to_date})\
+            .order_by('date')
+
+
+class DateRangeFilter(filters.BaseFilterBackend):
+    date_field = 'date'
+
+    def parse_date(self, request, parameter_name, default) -> date:
+        date_string = request.query_params.get(parameter_name)
+        if not date_string:
+            return default
+
+        format = '%d-%m-%y'
+        try:
+            return datetime.strptime(date_string, format)
+        except ValueError as e:
+            raise ParseError(str(e))
+
+    def filter_queryset(self, request, queryset, view):
+        date_field = getattr(view, 'date_field', self.date_field)
+        from_date = self.parse_date(request, 'from', date.fromtimestamp(0))
+        to_date = self.parse_date(request, 'to', date.today())
         return queryset\
             .filter(**{f'{date_field}__gte': from_date, f'{date_field}__lte': to_date})\
             .order_by('date')

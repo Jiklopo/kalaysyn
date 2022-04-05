@@ -2,7 +2,7 @@ from drf_spectacular.utils import OpenApiParameter, extend_schema
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import mixins
 
-from apps.common.filters import DateRangeFilter, UserFieldFilter
+from apps.common.filters import DateTimeRangeFilter, UserFieldFilter
 from apps.common.mixins import CreateAndAddUserMixin
 from apps.common.views import IsAuthenticatedView
 from apps.goals.models import Goal, GoalRecord, Roadmap
@@ -158,10 +158,10 @@ class GoalRecordRangeView(IsAuthenticatedView,
                           ):
     serializer_class = GoalRecordSerializer
     queryset = GoalRecord.objects.prefetch_related('goal')
-    filter_backends = [UserFieldFilter, DateRangeFilter]
+    filter_backends = [UserFieldFilter, DateTimeRangeFilter]
 
     @extend_schema(
-        description='Get user records in specified date range',
+        description='Get user goals records in specified date range, inclusive',
         parameters=[
             OpenApiParameter('from', OpenApiTypes.DATE,
                              description='DD-MM-YY HH:MM | Default: the beginning of times'),

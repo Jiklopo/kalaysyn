@@ -9,7 +9,7 @@ from apps.records import EmotionsTextChoices
 
 class Record(TimeStampModel):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    date = models.DateTimeField()
+    date = models.DateField()
     rating = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(5)])
     description = models.TextField(default="", blank=True, null=True)
