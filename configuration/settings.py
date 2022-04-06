@@ -1,10 +1,11 @@
 import dj_database_url
-import configuration.sentry
+from configuration.sentry import init_sentry
 
 from os import getenv
 from pathlib import Path
 from datetime import timedelta
 
+init_sentry()
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#uovdkdnpugy_q4h1zg41^tn$8va($i-ji@++1oa1wt&7o@e@l'
 DEBUG = True
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.common.middleware.JsonExceptionMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -64,7 +66,10 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler'
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
 }
 
 SPECTACULAR_SETTINGS = {
