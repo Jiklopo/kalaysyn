@@ -1,21 +1,19 @@
+from django.db import IntegrityError
 from rest_framework import serializers
+from rest_framework.exceptions import ParseError
 
 from apps.records.models import Record
 
 
 class RecordSerializer(serializers.ModelSerializer):
+    def save(self, **kwargs):
+        try:
+            return super().save(**kwargs)
+        except IntegrityError as e:
+            msg = str(e).split('\n')[1].split(':')[1].strip()
+            raise ParseError(msg)
+
     class Meta:
         model = Record
-        fields = [
-            'id',
-            'created_at',
-            'updated_at',
-            'date',
-            'rating',
-            'description',
-            'emotions',
-            'sleep_rating',
-            'fatigue_rating',
-            'health_rating'
-        ]
+        exclude = ['user']
         read_only_fields = ['id']

@@ -1,3 +1,4 @@
+from enum import unique
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator
@@ -31,3 +32,9 @@ class Record(TimeStampModel):
         validators=[MaxValueValidator(5)],
         blank=True, null=True
     )
+
+    class Meta:
+        ordering = ['-date']
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'date'], name='one_record_per_day')
+        ]
