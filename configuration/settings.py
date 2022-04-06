@@ -1,9 +1,9 @@
-from datetime import timedelta
-from webbrowser import get
-
 import dj_database_url
-from pathlib import Path
+import configuration.sentry
+
 from os import getenv
+from pathlib import Path
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#uovdkdnpugy_q4h1zg41^tn$8va($i-ji@++1oa1wt&7o@e@l'
@@ -63,7 +63,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler'
 }
 
 SPECTACULAR_SETTINGS = {
