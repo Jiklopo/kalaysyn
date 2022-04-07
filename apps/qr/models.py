@@ -33,6 +33,10 @@ class RelationshipCode(TimeStampModel):
         return self.created_at + timedelta(seconds=CODE_VALID_SECONDS)
 
 
+class RelationshipPermission(TimeStampModel):
+    can_view = models.BooleanField(default=True)
+
+
 class Relationship(TimeStampModel):
     doctor = models.ForeignKey(
         to=User,
@@ -44,17 +48,19 @@ class Relationship(TimeStampModel):
         on_delete=models.CASCADE,
         related_name='user_relationships'
     )
+    permissions = models.OneToOneField(
+        RelationshipPermission, 
+        on_delete=models.CASCADE,
+        null=True, blank=True
+    )
+
+    class Meta:
+        constraints = [models.UniqueConstraint(
+            name='unique-doctor-patient-relationship', fields=['doctor', 'user'])]
 
     def save(self, *args, **kwargs):
-        relationship = super().save(*args, **kwargs)
-        RelationshipPermission.objects.create(relationship=relationship)
-        return relationship
-
-
-class RelationshipPermission(TimeStampModel):
-    relationship = models.ForeignKey(
-        to=Relationship,
-        on_delete=models.CASCADE,
-        related_name='permissions'
-    )
-    can_view = models.BooleanField(default=True)
+        if self.permissions is None:
+            self.permissions = RelationshipPermission.objects.create(relationship=self)
+            
+        super().save(*args, **kwargs)
+        return self
