@@ -19,6 +19,7 @@ def try_initialize_debugger():
 
 
 def main():
+    try_initialize_debugger()
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'configuration.settings')
     try:
