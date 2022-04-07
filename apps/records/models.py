@@ -1,4 +1,3 @@
-from enum import unique
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator
@@ -9,7 +8,10 @@ from apps.records import EmotionsTextChoices
 
 
 class Record(TimeStampModel):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        to=User, on_delete=models.CASCADE,
+        related_name='records'
+    )
     date = models.DateField()
     rating = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(5)])
