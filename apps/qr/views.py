@@ -6,8 +6,8 @@ from rest_framework.exceptions import NotFound, ParseError
 from drf_spectacular.utils import extend_schema
 
 from apps.common.views import IsAuthenticatedView
-from apps.qr.models import Relationship, RelationshipCode
-from apps.qr.serializers import LinkCodeSerializer, GenerateCodeSerializer, RelationshipSerializer
+from apps.qr.models import RelationshipCode
+from apps.qr.serializers import GenerateCodeSerializer, RelationshipSerializer
 
 
 class GenerateCodeView(IsAuthenticatedView, mixins.CreateModelMixin):
@@ -47,7 +47,7 @@ class LinkCodeView(IsAuthenticatedView):
         request=None,
         responses=None
     )
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         code = self.get_object()
         data = {
             'doctor': code.doctor.id,
@@ -58,4 +58,3 @@ class LinkCodeView(IsAuthenticatedView):
         serializer.save()
         code.delete()
         return Response(serializer.data, status.HTTP_201_CREATED)
-
