@@ -6,6 +6,8 @@ from apps.authentication.models import User
 
 
 class PermissionsSerializer(serializers.ModelSerializer):
+    relationship = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = RelationshipPermission
         exclude = ['id']

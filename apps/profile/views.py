@@ -52,15 +52,24 @@ class PatientView(PatientBaseView, mixins.RetrieveModelMixin):
         return self.retrieve(request, pk)
 
 
-class RelationshipRetrieveDestroyView(IsAuthenticatedView,
-                                      mixins.DestroyModelMixin,
-                                      mixins.RetrieveModelMixin):
+class RelationshipBaseView(IsAuthenticatedView):
     serializer_class = RelationshipSerializer
 
     def get_queryset(self):
         user = self.request.user
         query = Q(user=user) | Q(doctor=user)
         return Relationship.objects.filter(query)
+
+
+class RelationshipListView(RelationshipBaseView,
+                           mixins.ListModelMixin):
+    def get(self, request):
+        return self.list(request)
+
+
+class RelationshipRetrieveDestroyView(RelationshipBaseView,
+                                      mixins.DestroyModelMixin,
+                                      mixins.RetrieveModelMixin):
 
     def get(self, request, pk):
         return self.retrieve(request, pk)
@@ -69,16 +78,24 @@ class RelationshipRetrieveDestroyView(IsAuthenticatedView,
         return self.destroy(request, pk)
 
 
-class PermissionRetrieveUpdateDestroyView(IsAuthenticatedView,
-                                          mixins.RetrieveModelMixin,
-                                          mixins.DestroyModelMixin,
-                                          mixins.UpdateModelMixin):
+class PermissionsBaseView(IsAuthenticatedView):
     serializer_class = PermissionsSerializer
 
     def get_queryset(self):
         return RelationshipPermission.objects\
             .prefetch_related('relationship')\
             .filter(relationship__user__id=self.request.user.id)
+
+
+class PermissionsListView(PermissionsBaseView, mixins.ListModelMixin):
+    def get(self, request):
+        return self.list(request)
+
+
+class PermissionRetrieveUpdateDestroyView(PermissionsBaseView,
+                                          mixins.RetrieveModelMixin,
+                                          mixins.DestroyModelMixin,
+                                          mixins.UpdateModelMixin):
 
     def get(self, request, pk):
         return self.retrieve(request, pk)
