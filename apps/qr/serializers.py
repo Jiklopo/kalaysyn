@@ -1,7 +1,8 @@
-from dataclasses import fields
 from rest_framework import serializers
+from apps.authentication.models import User
+from apps.common.serializers import UniqueConstraintModelSerializer
 
-from apps.qr.models import RelationshipCode
+from apps.qr.models import Relationship, RelationshipCode
 
 
 class GenerateCodeSerializer(serializers.ModelSerializer):
@@ -20,3 +21,12 @@ class LinkCodeSerializer(serializers.ModelSerializer):
         model = RelationshipCode
         fields = ['doctor', 'user_id']
         read_only_fields = ['doctor']
+
+
+class RelationshipSerializer(UniqueConstraintModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    doctor = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+    class Meta:
+        model = Relationship
+        fields = '__all__'

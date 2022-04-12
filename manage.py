@@ -19,9 +19,8 @@ def try_initialize_debugger():
 
 
 def main():
-    """Run administrative tasks."""
     try_initialize_debugger()
-
+    """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'configuration.settings')
     try:
         from django.core.management import execute_from_command_line

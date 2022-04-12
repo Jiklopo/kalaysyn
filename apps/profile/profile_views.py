@@ -3,9 +3,23 @@ from rest_framework import status
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 
-from apps.authentication.models import User
 from apps.common.views import IsAuthenticatedView
-from apps.profile.serializers import BecomeDoctorSerializer
+from apps.profile.serializers import BecomeDoctorSerializer, ProfileSerializer
+
+
+class ProfileView(IsAuthenticatedView,
+                  mixins.RetrieveModelMixin,
+                  mixins.UpdateModelMixin):
+    serializer_class = ProfileSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    def get(self, request):
+        return self.retrieve(request)
+
+    def put(self, request):
+        return self.partial_update(request)
 
 
 class BecomeDoctorView(IsAuthenticatedView, mixins.UpdateModelMixin):
@@ -22,7 +36,7 @@ class BecomeDoctorView(IsAuthenticatedView, mixins.UpdateModelMixin):
     )
     def post(self, request, *args, **kwargs):
         if(self.request.user.is_doctor):
-            return Response({'error': 'user is already a doctor'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'user is already a doctor.'}, status.HTTP_400_BAD_REQUEST)
 
         response = self.partial_update(request, *args, **kwargs)
         response.data = None

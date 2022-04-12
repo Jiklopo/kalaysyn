@@ -1,18 +1,10 @@
 from django.db import IntegrityError
-from rest_framework import serializers
-from rest_framework.exceptions import ParseError
+from apps.common.serializers import UniqueConstraintModelSerializer
 
 from apps.records.models import Record
 
 
-class RecordSerializer(serializers.ModelSerializer):
-    def save(self, **kwargs):
-        try:
-            return super().save(**kwargs)
-        except IntegrityError as e:
-            msg = str(e).split('\n')[1].split(':')[1].strip()
-            raise ParseError(msg)
-
+class RecordSerializer(UniqueConstraintModelSerializer):
     class Meta:
         model = Record
         exclude = ['user']

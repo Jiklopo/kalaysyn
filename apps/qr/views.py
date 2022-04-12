@@ -7,7 +7,7 @@ from drf_spectacular.utils import extend_schema
 
 from apps.common.views import IsAuthenticatedView
 from apps.qr.models import RelationshipCode
-from apps.qr.serializers import LinkCodeSerializer, GenerateCodeSerializer
+from apps.qr.serializers import GenerateCodeSerializer, RelationshipSerializer
 
 
 class GenerateCodeView(IsAuthenticatedView, mixins.CreateModelMixin):
@@ -31,13 +31,9 @@ class GenerateCodeView(IsAuthenticatedView, mixins.CreateModelMixin):
         return self.create(request, *args, **kwargs)
 
 
-class LinkCodeView(IsAuthenticatedView, mixins.UpdateModelMixin):
-    serializer_class = LinkCodeSerializer
+class LinkCodeView(IsAuthenticatedView):
+    serializer_class = RelationshipSerializer
     queryset = RelationshipCode.objects.all()
-
-    def get_serializer(self, *args, **kwargs):
-        kwargs['data'] = {'user_id': self.request.user.id}
-        return super().get_serializer(*args, **kwargs)
 
     def get_object(self):
         code = super().get_object()
@@ -51,5 +47,14 @@ class LinkCodeView(IsAuthenticatedView, mixins.UpdateModelMixin):
         request=None,
         responses=None
     )
-    def post(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+    def post(self, request):
+        code = self.get_object()
+        data = {
+            'doctor': code.doctor.id,
+            'user': request.user.id
+        }
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        code.delete()
+        return Response(serializer.data, status.HTTP_201_CREATED)
