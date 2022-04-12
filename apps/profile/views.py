@@ -1,12 +1,24 @@
 from rest_framework import mixins
 from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 
 from apps.common.views import IsAuthenticatedView
 from apps.common.permissions import IsDoctorPermission
-from apps.profile.serializers import BecomeDoctorSerializer, PatientRecordsSerializers, ProfileSerializer
+from apps.authentication.models import User
+from apps.profile.serializers import BecomeDoctorSerializer, PatientRecordsSerializer, PatientSerializer, ProfileSerializer
+
+
+class PatientBaseView(GenericAPIView):
+    permission_classes = [IsDoctorPermission]
+
+    def get_queryset(self):
+        user = self.request.user
+        return User\
+            .objects\
+            .prefetch_related('user_relationships', 'doctor_relationships')\
+            .filter(user_relationships__id__in=[r.id for r in user.doctor_relationships.all()])
 
 
 class ProfileView(IsAuthenticatedView,
@@ -24,13 +36,18 @@ class ProfileView(IsAuthenticatedView,
         return self.partial_update(request)
 
 
-class PatientRecordsView(APIView):
-    permission_classes = [IsDoctorPermission]
+class PatientsListView(PatientBaseView, mixins.ListModelMixin):
+    serializer_class = PatientSerializer
 
     def get(self, request):
-        patients = [relationship.user for relationship in request.user.doctor_relationships.all()]
-        serializer = PatientRecordsSerializers(instance=patients, many=True)
-        return Response(data=serializer.data)
+        return self.list(request)
+
+
+class PatientView(PatientBaseView, mixins.RetrieveModelMixin):
+    serializer_class = PatientRecordsSerializer
+
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
 
 
 class BecomeDoctorView(IsAuthenticatedView, mixins.UpdateModelMixin):

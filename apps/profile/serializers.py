@@ -21,7 +21,8 @@ class InlineRelationshipSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user_relationships = InlineRelationshipSerializer(many=True, read_only=True)
+    user_relationships = InlineRelationshipSerializer(
+        many=True, read_only=True)
 
     class Meta:
         model = User
@@ -51,12 +52,23 @@ class InlineRecordSerializer(serializers.ModelSerializer):
         ]
 
 
-class PatientRecordsSerializers(serializers.ModelSerializer):
+class PatientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+        ]
+
+
+class PatientRecordsSerializer(serializers.ModelSerializer):
     records = InlineRecordSerializer(read_only=True, many=True)
 
     class Meta:
         model = User
         fields = [
+            'id',
             'first_name',
             'last_name',
             'records'
