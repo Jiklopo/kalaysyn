@@ -5,6 +5,16 @@ from apps.records.models import Record
 from apps.authentication.models import User
 
 
+class InlineRecordSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+
+    class Meta:
+        model = Record
+        exclude = [
+            'description'
+        ]
+
+
 class PermissionsSerializer(serializers.ModelSerializer):
     relationship = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -47,14 +57,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
 
-class InlineRecordSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
-
+class BecomeDoctorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Record
-        exclude = [
-            'description'
-        ]
+        model = User
+        fields = ['is_doctor']
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -78,9 +84,3 @@ class PatientRecordsSerializer(serializers.ModelSerializer):
             'last_name',
             'records'
         ]
-
-
-class BecomeDoctorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['is_doctor']

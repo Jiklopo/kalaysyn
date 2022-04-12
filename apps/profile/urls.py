@@ -1,15 +1,12 @@
 from django.urls import path, include
 
-from apps.profile.views import (
+from apps.profile.profile_views import (
     BecomeDoctorView,
-    PatientView,
-    PatientsListView,
-    PermissionRetrieveUpdateDestroyView,
-    PermissionsListView,
-    ProfileView,
-    RelationshipRetrieveDestroyView,
-    RelationshipListView
+    ProfileView
 )
+from apps.profile.permission_views import PermissionsListView, PermissionRetrieveUpdateDestroyView
+from apps.profile.relationship_views import RelationshipListView, RelationshipRetrieveDestroyView
+from apps.profile.patient_views import PatientsListView, PatientView
 
 relationship_patterns = [
     path('', RelationshipListView.as_view(), name='profile-relationship-list'),
