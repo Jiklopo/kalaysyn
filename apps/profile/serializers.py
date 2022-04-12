@@ -5,23 +5,26 @@ from apps.records.models import Record
 from apps.authentication.models import User
 
 
-class InlinePermissionsSerializer(serializers.ModelSerializer):
+class PermissionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = RelationshipPermission
         exclude = ['id']
 
 
-class InlineRelationshipSerializer(serializers.ModelSerializer):
-    doctor = serializers.StringRelatedField(read_only=True)
-    permissions = InlinePermissionsSerializer(read_only=True)
+class RelationshipSerializer(serializers.ModelSerializer):
+    doctor = serializers.StringRelatedField()
+    permissions = PermissionsSerializer()
+
+    def update(self, instance, validated_data):
+        return self.permissions.update(self.permissions.instance, validated_data=validated_data.get('permissions'))
 
     class Meta:
         model = Relationship
-        exclude = ['user', 'id']
+        exclude = ['user']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user_relationships = InlineRelationshipSerializer(
+    user_relationships = RelationshipSerializer(
         many=True, read_only=True)
 
     class Meta:

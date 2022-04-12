@@ -2,12 +2,14 @@ from rest_framework import mixins
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 
 from apps.common.views import IsAuthenticatedView
 from apps.common.permissions import IsDoctorPermission
 from apps.authentication.models import User
-from apps.profile.serializers import BecomeDoctorSerializer, PatientRecordsSerializer, PatientSerializer, ProfileSerializer
+from apps.profile.serializers import BecomeDoctorSerializer, PatientRecordsSerializer, PatientSerializer, PermissionsSerializer, ProfileSerializer, RelationshipSerializer
+from apps.qr.models import Relationship, RelationshipPermission
 
 
 class PatientBaseView(GenericAPIView):
@@ -50,6 +52,44 @@ class PatientView(PatientBaseView, mixins.RetrieveModelMixin):
         return self.retrieve(request, pk)
 
 
+class RelationshipRetrieveDestroyView(IsAuthenticatedView,
+                                      mixins.DestroyModelMixin,
+                                      mixins.RetrieveModelMixin):
+    serializer_class = RelationshipSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        query = Q(user=user) | Q(doctor=user)
+        return Relationship.objects.filter(query)
+
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
+
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
+
+
+class PermissionRetrieveUpdateDestroyView(IsAuthenticatedView,
+                                          mixins.RetrieveModelMixin,
+                                          mixins.DestroyModelMixin,
+                                          mixins.UpdateModelMixin):
+    serializer_class = PermissionsSerializer
+
+    def get_queryset(self):
+        return RelationshipPermission.objects\
+            .prefetch_related('relationship')\
+            .filter(relationship__user__id=self.request.user.id)
+
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
+
+    def put(self, request, pk):
+        return self.partial_update(request, pk)
+
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
+
+
 class BecomeDoctorView(IsAuthenticatedView, mixins.UpdateModelMixin):
     def get_serializer(self, *args, **kwargs):
         kwargs['data'] = {'is_doctor': True}
@@ -64,7 +104,7 @@ class BecomeDoctorView(IsAuthenticatedView, mixins.UpdateModelMixin):
     )
     def post(self, request, *args, **kwargs):
         if(self.request.user.is_doctor):
-            return Response({'error': 'user is already a doctor'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'user is already a doctor.'}, status.HTTP_400_BAD_REQUEST)
 
         response = self.partial_update(request, *args, **kwargs)
         response.data = None
