@@ -47,7 +47,7 @@ class LinkCodeView(IsAuthenticatedView):
         request=None,
         responses=None
     )
-    def post(self, request):
+    def post(self, request, pk):
         code = self.get_object()
         data = {
             'doctor': code.doctor.id,
