@@ -34,7 +34,11 @@ class RelationshipCode(TimeStampModel):
 
 
 class RelationshipPermission(TimeStampModel):
-    can_view = models.BooleanField(default=True)
+    can_view_rating = models.BooleanField(default=True)
+    can_view_emotions = models.BooleanField(default=True)
+    can_view_sleep_rating = models.BooleanField(default=True)
+    can_view_fatigue_rating = models.BooleanField(default=True)
+    can_view_health_rating = models.BooleanField(default=True)
 
 
 class Relationship(TimeStampModel):
