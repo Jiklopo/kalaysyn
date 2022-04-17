@@ -53,6 +53,7 @@ class DateTimeRangeFilter(filters.BaseFilterBackend):
 
 class DateRangeFilter(filters.BaseFilterBackend):
     date_field = 'date'
+    default_from_date = date.fromtimestamp(0)
 
     def parse_date(self, request, parameter_name, default) -> date:
         date_string = request.query_params.get(parameter_name)
@@ -67,8 +68,10 @@ class DateRangeFilter(filters.BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         date_field = getattr(view, 'date_field', self.date_field)
-        from_date = self.parse_date(request, 'from', date.fromtimestamp(0))
+        default_from_date = getattr(view, 'default_from_date', self.default_from_date)
+        from_date = self.parse_date(request, 'from', default_from_date)
         to_date = self.parse_date(request, 'to', date.today())
-        return queryset\
+        queryset = queryset\
             .filter(**{f'{date_field}__gte': from_date, f'{date_field}__lte': to_date})\
-            .order_by('date')
+            .order_by(date_field)
+        return queryset

@@ -1,4 +1,3 @@
-from pydoc import doc
 from rest_framework import serializers
 from apps.qr.models import Relationship, RelationshipPermission
 
@@ -6,8 +5,18 @@ from apps.records.models import Record
 from apps.authentication.models import User
 
 
-class InlineRecordSerializer(serializers.ModelSerializer):
-    def __init__(self, permission=None, instance=None, data=None, **kwargs):
+class PatientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+        ]
+
+
+class PatientRecordsSerializer(serializers.ModelSerializer):
+    def __init__(self, instance=None, data=None, permission=None, **kwargs):
         super().__init__(instance, data, **kwargs)
         self.update_permissions(permission)
 
@@ -75,46 +84,3 @@ class ProfileSerializer(serializers.ModelSerializer):
             'username',
             'is_premium'
         ]
-
-
-class PatientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = [
-            'id',
-            'first_name',
-            'last_name',
-        ]
-
-
-class PatientRecordsSerializer(serializers.Serializer):
-    id = serializers.UUIDField(read_only=True)
-    first_name = serializers.CharField(read_only=True)
-    last_name = serializers.CharField(read_only=True)
-
-    def __init__(self, instance, **kwargs):
-        super().__init__(instance, **kwargs)
-        permission = self.get_permission(instance, **kwargs)
-        if permission is None:
-            return
-
-        self.fields['records'] = InlineRecordSerializer(
-            permission=permission, read_only=True, many=True)
-
-    def get_permission(self, instance, **kwargs):
-        request = kwargs.get('context', dict()).get('request')
-        if request is None:
-            return None
-
-        doctor = request.user
-        if doctor is None:
-            return None
-
-        relationship = doctor\
-            .doctor_relationships.all()\
-            .filter(user__id=instance.id)\
-            .first()
-
-        if relationship is None:
-            return None
-        return relationship.permissions

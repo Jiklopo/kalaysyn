@@ -29,6 +29,4 @@ class PermissionRetrieveUpdateDestroyView(PermissionsBaseView,
 
     def put(self, request, pk):
         return self.partial_update(request, pk)
-
-    def delete(self, request, pk):
-        return self.destroy(request, pk)
+        

@@ -13,7 +13,7 @@ relationship_patterns = [
 
 patients_patterns = [
     path('', PatientsListView.as_view(), name='profile-patients-list'),
-    path('<str:pk>/', PatientView.as_view(),
+    path('<str:patient_id>/records/', PatientView.as_view(),
          name='profile-patients-retrieve'),
 ]
 
