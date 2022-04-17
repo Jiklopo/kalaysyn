@@ -3,5 +3,6 @@ from .views import *
 
 urlpatterns = [
     path('', HealthView.as_view(), name='check-health'),
-    path('auth/', AuthHealthView.as_view(), name='check-auth-health')
+    path('auth/', AuthHealthView.as_view(), name='check-auth-health'),
+    path('celery/', CeleryHealthView.as_view(), name='check-celery-health'),
 ]
