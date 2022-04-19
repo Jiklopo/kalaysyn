@@ -3,11 +3,12 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 def init_sentry():
-    if getenv('DISABLE_SENTRY'):
+    SENTRY_KEY = getenv('SENTRY_KEY', None)
+    if not SENTRY_KEY:
         return
 
     sentry_sdk.init(
-        dsn="https://2c01e9fe95a44fb2aeb8795facc0c98f@o1191214.ingest.sentry.io/6312493",
+        dsn=SENTRY_KEY,
         integrations=[DjangoIntegration()],
 
         # Set traces_sample_rate to 1.0 to capture 100%
