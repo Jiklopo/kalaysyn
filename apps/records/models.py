@@ -40,3 +40,15 @@ class Record(TimeStampModel):
         constraints = [
             models.UniqueConstraint(fields=['user', 'date'], name='one_record_per_day')
         ]
+
+
+class RecordReport(TimeStampModel):
+    user = models.ForeignKey(
+        to=User, on_delete=models.CASCADE,
+        related_name='reports'
+    )
+    from_date=models.DateField()
+    to_date=models.DateField()
+    file=models.FileField(
+        null=True, blank=True
+    )
