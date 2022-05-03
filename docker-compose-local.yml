@@ -11,9 +11,8 @@ services:
     ports:
       - "8000:8000"
       - "3000:3000"
-    environment:
-      - ENABLE_DEBUGGING=1
-      - DISABLE_SENTRY=1
+    env_file:
+      - .env
     command: python manage.py runserver 0.0.0.0:8000
 
   celery:
@@ -22,6 +21,8 @@ services:
       - django
       - redis
     build: .
+    env_file:
+      - .env
     volumes:
       - .:/app
     command: celery -A configuration worker --loglevel=INFO
@@ -36,6 +37,8 @@ services:
       - "5555:5555"
     volumes:
       - .:/app
+    env_file:
+      - .env
     command: celery -A configuration flower
 
   db:
@@ -45,6 +48,8 @@ services:
       - POSTGRES_PASSWORD=password
     ports:
       - "5432:5432"
+    env_file:
+      - .env
     volumes:
       - db:/var/lib/postgresql
 

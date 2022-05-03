@@ -7,8 +7,8 @@ from datetime import timedelta
 
 init_sentry()
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-#uovdkdnpugy_q4h1zg41^tn$8va($i-ji@++1oa1wt&7o@e@l'
-DEBUG = True
+SECRET_KEY = getenv('SECRET_KEY', '123456')
+DEBUG = bool(getenv('DEBUG'))
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
