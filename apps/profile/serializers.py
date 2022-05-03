@@ -52,11 +52,12 @@ class PermissionsSerializer(serializers.ModelSerializer):
 
 class RelationshipSerializer(serializers.ModelSerializer):
     doctor = serializers.StringRelatedField()
+    user = serializers.StringRelatedField()
     permissions = PermissionsSerializer()
 
     class Meta:
         model = Relationship
-        exclude = ['user']
+        fields = '__all__'
 
 
 class ProfileSerializer(serializers.ModelSerializer):
