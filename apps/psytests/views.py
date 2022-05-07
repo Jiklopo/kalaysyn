@@ -7,16 +7,32 @@ from apps.common.mixins import CreateAndAddUserMixin
 
 from apps.common.views import IsAuthenticatedView
 from apps.psytests.models import PsyTest, PsyTestRecord
-from apps.psytests.serializers import PsyFullTestSerializer, PsyTestRatingInputSerializer, PsyTestRatingOutputSerializer, PsyTestRecordSerializer
+from apps.psytests.serializers import (
+    PsyTestDetailsSerializer,
+    PsyTestListSerializer,
+    PsyTestRatingInputSerializer,
+    PsyTestRatingOutputSerializer,
+    PsyTestRecordSerializer
+)
 
 
 class PsyTestsListView(IsAuthenticatedView, mixins.ListModelMixin):
-    queryset = PsyTest.objects.prefetch_related(
-        'questions', 'questions__variants')
-    serializer_class = PsyFullTestSerializer
+    queryset = PsyTest.objects.all()
+    serializer_class = PsyTestListSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    def get(self, request):
+        return self.list(request)
+
+
+class PsyTestDetailsView(IsAuthenticatedView, mixins.RetrieveModelMixin):
+    serializer_class = PsyTestDetailsSerializer
+    queryset = PsyTest.objects.prefetch_related(
+        'questions',
+        'questions__variants'
+    )
+
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
 
 
 class PsyTestRateView(IsAuthenticatedView):

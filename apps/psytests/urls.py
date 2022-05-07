@@ -1,9 +1,10 @@
 from django.urls import path, include
 
-from apps.psytests.views import PsyTestsListView, PsyTestRateView, RecordListCreateView, RecordRetrieveUpdateDeleteView
+from apps.psytests.views import PsyTestDetailsView, PsyTestsListView, PsyTestRateView, RecordListCreateView, RecordRetrieveUpdateDeleteView
 
 psytests_urls = [
     path('', PsyTestsListView.as_view(), name='psytests-list'),
+    path('<int:pk>/', PsyTestDetailsView.as_view(), name='psytests-details'),
     path('<int:pk>/rate/', PsyTestRateView.as_view(), name='psytest-rate')
 ]
 

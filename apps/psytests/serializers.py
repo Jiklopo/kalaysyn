@@ -28,12 +28,18 @@ class QuestionNestedSerializer(serializers.ModelSerializer):
         ]
 
 
-class PsyFullTestSerializer(serializers.ModelSerializer):
+class PsyTestDetailsSerializer(serializers.ModelSerializer):
     questions = QuestionNestedSerializer(
         many=True,
         read_only=True
     )
 
+    class Meta:
+        model = PsyTest
+        fields = '__all__'
+
+
+class PsyTestListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PsyTest
         fields = '__all__'
