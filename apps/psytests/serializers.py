@@ -1,3 +1,4 @@
+from unittest import result
 from rest_framework import serializers
 
 from apps.psytests.models import PsyTest, PsyTestRecord, Question, Variant
@@ -42,7 +43,7 @@ class PsyTestDetailsSerializer(serializers.ModelSerializer):
 class PsyTestListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PsyTest
-        fields = '__all__'
+        exclude = ['result_map']
 
 
 class PsyTestRatingInputSerializer(serializers.ModelSerializer):
@@ -70,6 +71,8 @@ class PsyTestRecordSerializer(serializers.ModelSerializer):
                 qs = qs.filter(question__test_id=test_id)
             return qs
     test = serializers.PrimaryKeyRelatedField(queryset=PsyTest.objects.all())
+    result_points = serializers.IntegerField()
+    result = serializers.CharField()
     chosen_variants = ChosenVariantsField(
         queryset=Variant.objects.all(),
         many=True
