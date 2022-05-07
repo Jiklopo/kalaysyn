@@ -58,21 +58,23 @@ class PsyTestRatingOutputSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PsyTestRecordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PsyTestRecord
-        exclude = ['user']
-
-    class ChosenVariantsField(serializers.PrimaryKeyRelatedField):
+class ChosenVariantsField(serializers.PrimaryKeyRelatedField):
         def get_queryset(self):
             qs = super().get_queryset()
             test_id = self.context['request'].data.get('test')
             if test_id is not None:
                 qs = qs.filter(question__test_id=test_id)
             return qs
+
+class PsyTestRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PsyTestRecord
+        exclude = ['user']
+
+    
     test = serializers.PrimaryKeyRelatedField(queryset=PsyTest.objects.all())
-    result_points = serializers.IntegerField()
-    result = serializers.CharField()
+    result_points = serializers.IntegerField(read_only=True)
+    result = serializers.CharField(read_only=True)
     chosen_variants = ChosenVariantsField(
         queryset=Variant.objects.all(),
         many=True

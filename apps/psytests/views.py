@@ -80,9 +80,3 @@ class RecordRetrieveUpdateDeleteView(IsAuthenticatedView,
 
     def get(self, request, pk):
         return self.retrieve(request)
-
-    def put(self, request, pk):
-        return self.partial_update(request)
-
-    def delete(self, request, pk):
-        return self.destroy(request)
