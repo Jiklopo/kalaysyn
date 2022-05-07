@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.authentication.models import User
@@ -8,6 +9,7 @@ from apps.common.models import TimeStampModel
 class PsyTest(TimeStampModel):
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True, null=True)
+    result_map = models.JSONField(default=dict)
     rating = models.FloatField(
         default=0,
         validators=[
@@ -19,7 +21,8 @@ class PsyTest(TimeStampModel):
     ratings_received = models.IntegerField(default=0)
 
     def rate(self, rating):
-        self.rating = (self.rating * self.ratings_received + rating) / (self.ratings_received + 1)
+        self.rating = (self.rating * self.ratings_received +
+                       rating) / (self.ratings_received + 1)
         self.ratings_received += 1
         self.save()
 
@@ -57,3 +60,23 @@ class PsyTestRecord(TimeStampModel):
     test = models.ForeignKey(PsyTest, on_delete=models.CASCADE)
     chosen_variants = models.ManyToManyField(Variant)
 
+    @property
+    def result_points(self):
+        variants = self.chosen_variants.all()
+        sum = 0
+        for v in variants:
+            sum += v.points
+        return sum
+
+    @property
+    def result(self):
+        result_map = self.test.result_map
+        points = [int(i) for i in result_map.keys()]
+        points.sort(reverse=True)
+        result_points = self.result_points
+        for p in points:
+            if result_points < p:
+                continue
+
+            result = result_map.get(str(p), None)
+            return result

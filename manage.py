@@ -5,7 +5,7 @@ import sys
 
 
 def try_initialize_debugger():
-    if not os.getenv('ENABLE_DEBUGGING'):
+    if not os.getenv('DEBUGGER'):
         return
 
     import debugpy
