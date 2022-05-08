@@ -1,12 +1,10 @@
-FROM python:3.10-alpine
+FROM python:3.10-slim-buster
 
 COPY ./ ./app
 
 WORKDIR /app
 
-RUN apk -U upgrade
-
-RUN apk add build-base
+RUN apt update && apt upgrade -y
 
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
