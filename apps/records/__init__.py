@@ -5,6 +5,7 @@ class ReportStatusChoices(models.TextChoices):
     CREATED = 'CREATED', 'Created'
     PROCESSING = 'PROCESSING', 'Processing'
     READY = 'READY', 'Ready'
+    ERROR = 'ERROR', 'Error'
 
 class EmotionsTextChoices(models.TextChoices):
     # Note for my Android friends:

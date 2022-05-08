@@ -19,6 +19,11 @@ def generate_report_task(self, report_id):
     report.status = ReportStatusChoices.PROCESSING.value
     report.save()
     report_path = generate_report_file(report)
+    if not report_path:
+        report.status = ReportStatusChoices.ERROR.value
+        report.save()
+        return
+
     report.status = ReportStatusChoices.READY.value
     with open(report_path, 'rb') as f:
         report.file.save(report.get_file_name(), ContentFile((f.read())))
@@ -58,6 +63,8 @@ def generate_report_file(report: RecordReport):
         date__gte=report.from_date,
         date__lte=report.to_date
     ))
+    if len(records) == 0:
+        return None
 
     dates = [r.date for r in records]
     ratings = [r.rating for r in records]
