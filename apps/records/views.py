@@ -1,12 +1,15 @@
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import mixins
+from rest_framework import status
+from rest_framework.response import Response
 
 from apps.common.filters import DateRangeFilter, UserFieldFilter
 from apps.common.mixins import CreateAndAddUserMixin
 from apps.common.views import IsAuthenticatedView
-from apps.records.models import Record
-from apps.records.serializers import RecordSerializer
+from apps.records.models import Record, RecordReport
+from apps.records.serializers import RecordSerializer, ReportSerializer
+from apps.records.tasks import generate_report_task
 
 
 class RecordListCreateView(IsAuthenticatedView,
@@ -67,3 +70,21 @@ class RecordDateRangeView(IsAuthenticatedView,
     )
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+class ReportListCreateView(IsAuthenticatedView,
+                           mixins.ListModelMixin):
+    queryset = RecordReport.objects.all()
+    serializer_class = ReportSerializer
+    filter_backends = [UserFieldFilter]
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        report = serializer.save(user=request.user)
+        task = generate_report_task.delay(report_id=report.id)
+        return Response(serializer.data, status.HTTP_201_CREATED)
+
