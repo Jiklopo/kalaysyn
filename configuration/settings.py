@@ -34,10 +34,11 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
+    'storages',
 ]
 
 INSTALLED_APPS = [
-    'jazzmin', # This app must be before django.contrib.admin
+    'jazzmin',  # This app must be before django.contrib.admin
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -141,10 +142,22 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
-# Static files
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+# Files configuration
+STATIC_URL = f'{getenv("AWS_LOCATION")}/static/'
+STATIC_ROOT = STATIC_ROOT = BASE_DIR / "staticfiles-cdn"
+STATICFILES_STORAGE = 'configuration.cdn.StaticRootS3BotoStorage'
+DEFAULT_FILE_STORAGE = 'configuration.cdn.MediaRootS3BotoStorage'
+
+# AWS
+AWS_S3_ACCESS_KEY_ID=getenv('AWS_S3_ACCESS_KEY_ID')
+AWS_S3_SECRET_ACCESS_KEY=getenv('AWS_S3_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = getenv('AWS_S3_ENDPOINT_URL')
+AWS_LOCATION = getenv('AWS_LOCATION')
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+    "ACL": "public-read"
+}
 
 # App settings
 CODE_VALID_SECONDS = 300
