@@ -1,6 +1,11 @@
 from django.db import models
 
 
+class ReportStatusChoices(models.TextChoices):
+    CREATED = 'CREATED', 'Created'
+    PROCESSING = 'PROCESSING', 'Processing'
+    READY = 'READY', 'Ready'
+
 class EmotionsTextChoices(models.TextChoices):
     # Note for my Android friends:
     # VAR_NAME = DB_VALUE, HUMAN_READABLE_NAME

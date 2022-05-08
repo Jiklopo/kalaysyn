@@ -1,7 +1,7 @@
-from django.db import IntegrityError
-from apps.common.serializers import UniqueConstraintModelSerializer
+from rest_framework import serializers
 
-from apps.records.models import Record
+from apps.common.serializers import UniqueConstraintModelSerializer
+from apps.records.models import Record, RecordReport
 
 
 class RecordSerializer(UniqueConstraintModelSerializer):
@@ -9,3 +9,18 @@ class RecordSerializer(UniqueConstraintModelSerializer):
         model = Record
         exclude = ['user']
         read_only_fields = ['id']
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecordReport
+        fields = [
+            'from_date',
+            'to_date',
+            'status',
+            'file'
+        ]
+        read_only_fields = [
+            'status',
+            'file'
+        ]

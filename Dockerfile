@@ -4,6 +4,9 @@ COPY ./ ./app
 
 WORKDIR /app
 
-RUN apk -U upgrade \
-    && pip install --upgrade pip \
+RUN apk -U upgrade
+
+RUN apk add build-base
+
+RUN pip install --upgrade pip \
     && pip install -r requirements.txt
