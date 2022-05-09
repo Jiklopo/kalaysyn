@@ -4,7 +4,7 @@ from rest_framework.validators import UniqueValidator
 from apps.authentication.models import User
 
 
-class UserInputSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
@@ -25,12 +25,3 @@ class UserInputSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True}
         }
-
-
-class PasswordSerializer(serializers.Serializer):
-    password = serializers.CharField()
-
-
-class ChangePasswordSerializer(serializers.Serializer):
-    password = serializers.CharField()
-    new_password = serializers.CharField()
