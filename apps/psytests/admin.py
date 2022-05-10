@@ -14,6 +14,8 @@ class QuestionInline(admin.TabularInline):
 @admin.register(PsyTest)
 class PsyTestAdmin(admin.ModelAdmin):
     inlines = [QuestionInline]
+    exclude = ['ratings_received']
+    readonly_fields = ['rating']
 
 
 @admin.register(Question)

@@ -1,15 +1,26 @@
 from email.policy import default
+from unicodedata import category
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.authentication.models import User
 
 from apps.common.models import TimeStampModel
+from apps.psytests import PsyTestCategoryChoices
 
 
 class PsyTest(TimeStampModel):
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True, null=True)
-    result_map = models.JSONField(default=dict)
+    result_map = models.JSONField(
+        default=dict,
+        help_text='Result mappings as a dictionary, order does not matter, e.g. {"1":"Sobaka", "8":"Psina", "3": "Pyos"}\n\
+            Compute examples: 4 => Pyos | 8 => Psina | 0 => Error!!!'
+    )
+    category = models.CharField(
+        max_length=16,
+        choices=PsyTestCategoryChoices.choices,
+        default=PsyTestCategoryChoices.OTHER.value
+    )
     rating = models.FloatField(
         default=0,
         validators=[
