@@ -3,6 +3,7 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework import mixins
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser
 
 from apps.common.filters import DateRangeFilter, UserFieldFilter
 from apps.common.mixins import CreateAndAddUserMixin
@@ -88,3 +89,18 @@ class ReportListCreateView(IsAuthenticatedView,
         task = generate_report_task.delay(report_id=report.id)
         return Response(serializer.data, status.HTTP_201_CREATED)
 
+
+class ImageUploadView(IsAuthenticatedView, CreateAndAddUserMixin):
+    parser_classes = [MultiPartParser]
+    queryset = Record.objects.all()
+    serializer_class = RecordSerializer
+
+    def post(self, request):
+        image = request.data.pop('image')[0]
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        record = Record(user=request.user, **serializer.validated_data)
+        record.image.save(image.name, image)
+        record.save()
+        serializer = self.get_serializer(instance=record)
+        return Response(serializer.data, status=201)
