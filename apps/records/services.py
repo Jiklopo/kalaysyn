@@ -133,8 +133,7 @@ def generate_report_file(report: RecordReport, path=None):
     path = path or f'/tmp/{report.get_file_name()}'
     with PdfPages(path) as pdf:
         pdf.savefig(get_title_page(user, records))
-        pdf.savefig(get_heading_page('Rating Graphs',
-                    'Separate line graph for each rating type'))
+        pdf.savefig(get_heading_page('Graphs'))
         pdf.savefig(get_graph('Day Rating', ratings, dates))
         pdf.savefig(get_graph('Sleep Rating', sleep_rating, dates))
         pdf.savefig(get_graph('Fatigue Rating', fatigue_rating, dates))
