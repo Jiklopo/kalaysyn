@@ -39,6 +39,8 @@ class PatientRecordsSerializer(serializers.ModelSerializer):
         exclude = [
             'description',
             'user',
+            'image',
+            'title'
         ]
 
 

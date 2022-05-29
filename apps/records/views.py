@@ -3,6 +3,7 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework import mixins
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.parsers import JSONParser, MultiPartParser
 
 from apps.common.filters import DateRangeFilter, UserFieldFilter
 from apps.common.mixins import CreateAndAddUserMixin
@@ -15,6 +16,7 @@ from apps.records.tasks import generate_report_task
 class RecordListCreateView(IsAuthenticatedView,
                            CreateAndAddUserMixin,
                            mixins.ListModelMixin):
+    parser_classes = [JSONParser, MultiPartParser]
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
 
@@ -87,4 +89,4 @@ class ReportListCreateView(IsAuthenticatedView,
         report = serializer.save(user=request.user)
         task = generate_report_task.delay(report_id=report.id)
         return Response(serializer.data, status.HTTP_201_CREATED)
-
+        

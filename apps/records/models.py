@@ -7,11 +7,17 @@ from apps.common.models import TimeStampModel
 from apps.records import EmotionsTextChoices, ReportStatusChoices
 
 
+def get_image_path(instance, filename):
+    extension = filename.split('.')[-1]
+    return f'images/{instance.user.id}/{instance.id}.{extension}'
+
+
 class Record(TimeStampModel):
     user = models.ForeignKey(
         to=User, on_delete=models.CASCADE,
         related_name='records'
     )
+    title = models.CharField(max_length=256, null=True, blank=True)
     date = models.DateField()
     rating = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(5)])
@@ -34,6 +40,7 @@ class Record(TimeStampModel):
         validators=[MaxValueValidator(5)],
         blank=True, null=True
     )
+    image = models.ImageField(upload_to=get_image_path, null=True, blank=True)
 
     class Meta:
         ordering = ['-date']
