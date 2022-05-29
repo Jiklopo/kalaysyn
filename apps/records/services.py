@@ -21,6 +21,14 @@ def get_title_page(user, records):
     firstPage.text(0.5, 0.05, disclamer, size=10, ha='center')
     return firstPage
 
+def get_heading_page(title, description=None):
+    firstPage = plt.figure()
+    firstPage.clf()
+
+    firstPage.text(0.5, 0.65, title, size=24, ha='center')
+    firstPage.text(0.5, 0.55, description, size=16, ha='center')
+    return firstPage
+
 
 def get_graph(field_name, data, dates):
     fig, ax = plt.subplots()
@@ -32,14 +40,14 @@ def get_graph(field_name, data, dates):
     return fig
 
 
-def get_table(field_name, data, dates):
+def get_table(records, dates):
     cell_labels = ['Date',
                    'Rating',
                    'Sleep Rating',
                    'Fatigue Rating',
                    'Health Rating']
     total_cells = []
-    for i, v in enumerate(data):
+    for i, v in enumerate(records):
         total_cells.append([
             dates[i],
             v.rating,
@@ -55,7 +63,7 @@ def get_table(field_name, data, dates):
     for page in split_cells:
         fig, ax = plt.subplots(1)
         ax.axis('off')
-        table = plt.table(page, colLabels=cell_labels, loc='center',colLoc='center')
+        plt.table(page, colLabels=cell_labels, loc='center',colLoc='center')
         figs.append(fig)
     return figs
 
@@ -81,11 +89,13 @@ def generate_report_file(report: RecordReport, path=None):
     path = path or f'/tmp/{report.get_file_name()}'
     with PdfPages(path) as pdf:
         pdf.savefig(get_title_page(user, records))
+        pdf.savefig(get_heading_page('Rating Graphs', 'Separate line graph for each rating type'))
         pdf.savefig(get_graph('Day Rating', ratings, dates))
         pdf.savefig(get_graph('Sleep Rating', sleep_rating, dates))
         pdf.savefig(get_graph('Fatigue Rating', fatigue_rating, dates))
         pdf.savefig(get_graph('Health Rating', health_rating, dates))
-        for fig in get_table('Table', records, dates):
+        pdf.savefig(get_heading_page('Raw data table', 'Table of all records'))
+        for fig in get_table(records, dates):
             pdf.savefig(fig)
 
     return path
