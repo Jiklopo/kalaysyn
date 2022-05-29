@@ -8,7 +8,7 @@ class RecordSerializer(UniqueConstraintModelSerializer):
     class Meta:
         model = Record
         exclude = ['user']
-        read_only_fields = ['id', 'image']
+        read_only_fields = ['id']
 
 
 class ReportSerializer(serializers.ModelSerializer):
