@@ -9,6 +9,18 @@ from apps.records.models import Record, RecordReport
 def ceil_division(a, b):
     return -1 * (-a // b)
 
+def filter_empty_data(data, dates):
+    new_data = []
+    new_dates = []
+    for i, v in enumerate(data):
+        if not v:
+            continue
+
+        new_data.append(v)
+        new_dates.append(dates[i])
+    
+    return (new_data, new_dates)
+
 
 def get_title_page(user, records):
     firstPage = plt.figure()
@@ -37,6 +49,7 @@ def get_heading_page(title, description=None):
 
 def get_graph(field_name, data, dates):
     fig, ax = plt.subplots()
+    data, dates = filter_empty_data(data, dates)
     fig.autofmt_xdate(rotation=45)
     ax.plot(dates, data)
     ax.set_title(field_name)
@@ -95,6 +108,7 @@ def get_table(records, dates):
         plt.table(page, colLabels=cell_labels, loc='center', colLoc='center')
         figs.append(fig)
     return figs
+
 
 
 def generate_report_file(report: RecordReport, path=None):
