@@ -19,6 +19,7 @@ class RecordListCreateView(IsAuthenticatedView,
     parser_classes = [JSONParser, MultiPartParser]
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
+    filter_backends = [UserFieldFilter]
 
     @extend_schema(description='Returns list of user records')
     def get(self, request, *args, **kwargs):
