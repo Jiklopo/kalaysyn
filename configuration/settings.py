@@ -28,6 +28,7 @@ LOCAL_APPS = [
     'apps.profile',
     'apps.goals',
     'apps.psytests',
+    'apps.landing'
 ]
 
 THIRD_PARTY_APPS = [

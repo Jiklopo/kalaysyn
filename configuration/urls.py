@@ -31,6 +31,7 @@ api_patterns = [
 
 
 urlpatterns = [
+    path('', include('apps.landing.urls')),
     path('admin/', admin.site.urls),
     path('api/v1/', include(api_patterns)),
     path('api/schema/', include(open_api_patterns)),
