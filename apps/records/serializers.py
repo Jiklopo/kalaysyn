@@ -22,5 +22,6 @@ class ReportSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             'status',
-            'file'
+            'file',
+            'image'
         ]

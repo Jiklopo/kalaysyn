@@ -3,10 +3,10 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework import mixins
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.parsers import JSONParser, MultiPartParser
 
 from apps.common.filters import DateRangeFilter, UserFieldFilter
 from apps.common.mixins import CreateAndAddUserMixin
+from apps.common.parsers import NoFileNameFileUploadParser
 from apps.common.views import IsAuthenticatedView
 from apps.records.models import Record, RecordReport
 from apps.records.serializers import RecordSerializer, ReportSerializer
@@ -16,7 +16,6 @@ from apps.records.tasks import generate_report_task
 class RecordListCreateView(IsAuthenticatedView,
                            CreateAndAddUserMixin,
                            mixins.ListModelMixin):
-    parser_classes = [JSONParser, MultiPartParser]
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
     filter_backends = [UserFieldFilter]
@@ -54,6 +53,24 @@ class RecordUpdateDeleteView(IsAuthenticatedView,
     @extend_schema(description='Delete record')
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class RecordImageUploadView(IsAuthenticatedView):
+    lookup_url_kwarg = 'record_id'
+    queryset = Record.objects.all()
+    serializer_class = RecordSerializer
+    filter_backends = [UserFieldFilter]
+    parser_classes = [NoFileNameFileUploadParser]
+
+    def post(self, request, record_id):
+        if not request.FILES:
+            return Response({'detail': 'No files were provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        record: Record = self.get_object()
+        file = request.data.get('file')
+        record.image.save(file.name, file)
+        serializer = self.get_serializer(instance=record)
+        return Response(serializer.data)
 
 
 class RecordDateRangeView(IsAuthenticatedView,
