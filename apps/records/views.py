@@ -3,7 +3,7 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework import mixins
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import MultiPartParser
 
 from apps.common.filters import DateRangeFilter, UserFieldFilter
 from apps.common.mixins import CreateAndAddUserMixin
@@ -60,7 +60,7 @@ class RecordImageUploadView(IsAuthenticatedView):
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
     filter_backends = [UserFieldFilter]
-    parser_classes = [FileUploadParser]
+    parser_classes = [MultiPartParser]
 
     @extend_schema(
         request={
@@ -68,11 +68,12 @@ class RecordImageUploadView(IsAuthenticatedView):
             'image/jpeg': bytes,
         })
     def post(self, request, record_id):
-        if not request.FILES:
+        files = list(request.FILES.values())
+        if not files:
             return Response({'detail': 'No files were provided'}, status=status.HTTP_400_BAD_REQUEST)
 
+        file = files[0]
         record: Record = self.get_object()
-        file = request.data.get('file')
         record.image.save(file.name, file)
         serializer = self.get_serializer(instance=record)
         return Response(serializer.data)
@@ -84,7 +85,7 @@ class RecordDateRangeView(IsAuthenticatedView,
     serializer_class = RecordSerializer
     filter_backends = [UserFieldFilter, DateRangeFilter]
 
-    @ extend_schema(
+    @extend_schema(
         description='Get user records in specified date range, inclusive',
         parameters=[
             OpenApiParameter('from', OpenApiTypes.DATE,
