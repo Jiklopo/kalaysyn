@@ -1,3 +1,4 @@
+import uuid
 import numpy as np
 from datetime import date
 from matplotlib import pyplot as plt
@@ -130,7 +131,7 @@ def generate_report_file(report: RecordReport, path=None):
     health_rating = [r.health_rating for r in records]
     emotions = [r.emotions for r in records]
 
-    path = path or f'/tmp/{report.get_file_name()}'
+    path = path or f'/tmp/{uuid.uuid4()}'
     with PdfPages(path) as pdf:
         pdf.savefig(get_title_page(user, records))
         pdf.savefig(get_heading_page('Graphs'))

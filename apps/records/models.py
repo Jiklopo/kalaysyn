@@ -67,7 +67,7 @@ class RecordReport(TimeStampModel):
     )
 
     def get_file_name(self):
-        return f'{self.id}_{self.user.id}_{self.from_date}_{self.to_date}.pdf'
+        return f'reports/{self.user.id}/{self.id}_{self.from_date}_{self.to_date}.pdf'
 
     def delete(self, *args, **kwargs):
         self.file.delete()
