@@ -62,10 +62,15 @@ class RecordImageUploadView(IsAuthenticatedView):
     filter_backends = [UserFieldFilter]
     parser_classes = [NoFileNameFileUploadParser]
 
+    @extend_schema(
+        request={
+            'image/png': bytes,
+            'image/jpeg': bytes,
+        })
     def post(self, request, record_id):
         if not request.FILES:
             return Response({'detail': 'No files were provided'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         record: Record = self.get_object()
         file = request.data.get('file')
         record.image.save(file.name, file)
@@ -79,7 +84,7 @@ class RecordDateRangeView(IsAuthenticatedView,
     serializer_class = RecordSerializer
     filter_backends = [UserFieldFilter, DateRangeFilter]
 
-    @extend_schema(
+    @ extend_schema(
         description='Get user records in specified date range, inclusive',
         parameters=[
             OpenApiParameter('from', OpenApiTypes.DATE,
@@ -107,4 +112,3 @@ class ReportListCreateView(IsAuthenticatedView,
         report = serializer.save(user=request.user)
         task = generate_report_task.delay(report_id=report.id)
         return Response(serializer.data, status.HTTP_201_CREATED)
-        
