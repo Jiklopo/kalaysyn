@@ -55,7 +55,7 @@ class RecordUpdateDeleteView(IsAuthenticatedView,
         return self.destroy(request, *args, **kwargs)
 
 
-class RecordImageUploadView(IsAuthenticatedView):
+class RecordImageUploadDeleteView(IsAuthenticatedView):
     lookup_url_kwarg = 'record_id'
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
@@ -64,9 +64,17 @@ class RecordImageUploadView(IsAuthenticatedView):
 
     @extend_schema(
         request={
-            'image/png': bytes,
-            'image/jpeg': bytes,
-        })
+            'multipart/form-data': {
+                'type': 'object',
+                'properties': {
+                    'file': {
+                        'type': 'string',
+                        'format': 'binary'
+                    }
+                }
+            }
+        },
+    )
     def post(self, request, record_id):
         files = list(request.FILES.values())
         if not files:
@@ -75,6 +83,13 @@ class RecordImageUploadView(IsAuthenticatedView):
         file = files[0]
         record: Record = self.get_object()
         record.image.save(file.name, file)
+        serializer = self.get_serializer(instance=record)
+        return Response(serializer.data)
+
+    def delete(self, request, record_id):
+        record: Record = self.get_object()
+        record.image = None
+        record.save()
         serializer = self.get_serializer(instance=record)
         return Response(serializer.data)
 
