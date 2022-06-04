@@ -3,10 +3,10 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework import mixins
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.parsers import FileUploadParser
 
 from apps.common.filters import DateRangeFilter, UserFieldFilter
 from apps.common.mixins import CreateAndAddUserMixin
-from apps.common.parsers import NoFileNameFileUploadParser
 from apps.common.views import IsAuthenticatedView
 from apps.records.models import Record, RecordReport
 from apps.records.serializers import RecordSerializer, ReportSerializer
@@ -60,7 +60,7 @@ class RecordImageUploadView(IsAuthenticatedView):
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
     filter_backends = [UserFieldFilter]
-    parser_classes = [NoFileNameFileUploadParser]
+    parser_classes = [FileUploadParser]
 
     @extend_schema(
         request={
