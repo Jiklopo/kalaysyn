@@ -9,7 +9,7 @@ from apps.common.filters import DateRangeFilter, UserFieldFilter
 from apps.common.mixins import CreateAndAddUserMixin
 from apps.common.views import IsAuthenticatedView
 from apps.records.models import Record, RecordReport
-from apps.records.serializers import RecordSerializer, ReportSerializer
+from apps.records.serializers import RecordOutputSerializer, RecordSerializer, ReportSerializer
 from apps.records.tasks import generate_report_task
 
 
@@ -17,8 +17,11 @@ class RecordListCreateView(IsAuthenticatedView,
                            CreateAndAddUserMixin,
                            mixins.ListModelMixin):
     queryset = Record.objects.all()
-    serializer_class = RecordSerializer
     filter_backends = [UserFieldFilter]
+
+    def get_serializer_class(self):
+        return RecordOutputSerializer if self.request.method == 'GET'\
+            else RecordSerializer
 
     @extend_schema(description='Returns list of user records')
     def get(self, request, *args, **kwargs):
@@ -27,7 +30,7 @@ class RecordListCreateView(IsAuthenticatedView,
     @extend_schema(
         description='Create user record',
         responses={
-            201: serializer_class
+            201: RecordSerializer
         }
     )
     def post(self, request, *args, **kwargs):
@@ -97,7 +100,7 @@ class RecordImageUploadDeleteView(IsAuthenticatedView):
 class RecordDateRangeView(IsAuthenticatedView,
                           mixins.ListModelMixin):
     queryset = Record.objects.all()
-    serializer_class = RecordSerializer
+    serializer_class = RecordOutputSerializer
     filter_backends = [UserFieldFilter, DateRangeFilter]
 
     @extend_schema(
